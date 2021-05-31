@@ -48,5 +48,8 @@ public class PlayerControl : MonoBehaviour
         {
             characterAnimator.SetUp(animator);
         }
+
+        characterMovement.OnAttackModePressed += characterAnimator.SetFightingStanceAnimation;
+        characterMovement.OnAttackPressed += characterAnimator.AttackAnimation;
     }
 }

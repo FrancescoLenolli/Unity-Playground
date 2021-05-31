@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CharacterMovement : MonoBehaviour
@@ -11,12 +12,20 @@ public class CharacterMovement : MonoBehaviour
     private CharacterController controller;
     private Vector3 moveInputValue;
     private bool isRunningPressed;
+    private bool isInAttackMode;
+
+    private Action<bool> onAttackModePressed;
+    private Action<bool> onAttackPressed;
+
+    public Action<bool> OnAttackModePressed { get => onAttackModePressed; set => onAttackModePressed = value; }
+    public Action<bool> OnAttackPressed { get => onAttackPressed; set => onAttackPressed = value; }
 
     public void SetUp(CharacterController controller)
     {
         this.controller = controller;
         moveInputValue = Vector2.zero;
         isRunningPressed = false;
+        isInAttackMode = false;
     }
 
     public void HandleMovement(out float inputValue, out bool isRunning)
@@ -28,7 +37,7 @@ public class CharacterMovement : MonoBehaviour
 
         float inputX = Mathf.Abs(moveInputValue.x);
         float inputZ = Mathf.Abs(moveInputValue.z);
-        inputValue = isRunningPressed ? (inputX + inputZ) * 2 : inputX + inputZ;
+        inputValue = inputX + inputZ;
         isRunning = isRunningPressed;
     }
 
@@ -53,5 +62,17 @@ public class CharacterMovement : MonoBehaviour
     private void OnRun(InputValue value)
     {
         isRunningPressed = value.isPressed;
+    }
+
+    private void OnAttackMode()
+    {
+        isInAttackMode = !isInAttackMode;
+        onAttackModePressed?.Invoke(isInAttackMode);
+    }
+
+    private void OnAttack()
+    {
+        if (isInAttackMode)
+            onAttackPressed?.Invoke(true);
     }
 }
