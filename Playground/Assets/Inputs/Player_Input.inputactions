@@ -1,0 +1,52 @@
+{
+    "name": "Player_Input",
+    "maps": [
+        {
+            "name": "CharacterControl",
+            "id": "b00a1b8d-93c4-47bd-8504-45a06fd2dae7",
+            "actions": [
+                {
+                    "name": "Movement",
+                    "type": "Value",
+                    "id": "e47021d9-5854-42ee-9388-3f9ab5643786",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Run",
+                    "type": "Button",
+                    "id": "7e55f43a-87ce-4ed8-b75d-b4d91c82a5ba",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "2635f475-fe3c-4689-8700-0fa57cfb1d25",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5d60e19e-43ae-413e-9a49-ae7fbc4d4e49",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
