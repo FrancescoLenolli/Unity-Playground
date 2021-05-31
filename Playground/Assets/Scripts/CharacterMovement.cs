@@ -5,29 +5,43 @@ public class CharacterMovement : MonoBehaviour
 {
     public float speed = 1.0f;
     public float runSpeedMultiplier = 2.0f;
-    [Range(-1, -0.1f)]
+    [Range(0.1f, 1f)]
     public float maxBackwardsSpeedValue = -0.3f;
 
     private CharacterController controller;
     private Vector3 moveInputValue;
-    private bool isRunning;
+    private bool isRunningPressed;
 
     public void SetUp(CharacterController controller)
     {
         this.controller = controller;
         moveInputValue = Vector2.zero;
-        isRunning = false;
+        isRunningPressed = false;
     }
 
-    public void HandleMovement(out Vector3 inputValue)
+    public void HandleMovement(out float inputValue, out bool isRunning)
     {
-        isRunning = moveInputValue.z > 0;
-        moveInputValue.z = Mathf.Clamp(moveInputValue.z, maxBackwardsSpeedValue, 1.0f);
+        moveInputValue.z = Mathf.Clamp(moveInputValue.z, -maxBackwardsSpeedValue, 1.0f);
+        Vector3 velocity = moveInputValue * Time.deltaTime * (isRunningPressed ? speed * runSpeedMultiplier : speed);
 
-        Vector3 velocity = moveInputValue * Time.deltaTime * (isRunning ? speed * runSpeedMultiplier : speed);
         controller.Move(velocity);
 
-        inputValue = moveInputValue;
+        float inputX = Mathf.Abs(moveInputValue.x);
+        float inputZ = Mathf.Abs(moveInputValue.z);
+        inputValue = isRunningPressed ? (inputX + inputZ) * 2 : inputX + inputZ;
+        isRunning = isRunningPressed;
+    }
+
+    public void HandleRotation()
+    {
+        if (moveInputValue == Vector3.zero)
+            return;
+
+        Vector3 lookAtPosition = new Vector3(moveInputValue.x, 0.0f, moveInputValue.z);
+        Quaternion currentRotation = transform.rotation;
+        Quaternion targetRotation = Quaternion.LookRotation(lookAtPosition);
+
+        transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, 1.0f);
     }
 
     private void OnMovement(InputValue value)
@@ -38,6 +52,6 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnRun(InputValue value)
     {
-        isRunning = value.isPressed;
+        isRunningPressed = value.isPressed;
     }
 }

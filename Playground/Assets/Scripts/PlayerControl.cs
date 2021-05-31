@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterMovement))]
+[RequireComponent(typeof(CharacterAnimator))]
 public class PlayerControl : MonoBehaviour
 {
     private CharacterMovement characterMovement;
@@ -14,10 +16,12 @@ public class PlayerControl : MonoBehaviour
 
     private void Update()
     {
-        Vector3 inputValue = Vector3.zero;
+        float inputValue = 0.0f;
+        bool isRunning = false;
 
-        characterMovement.HandleMovement(out inputValue);
-        characterAnimator.HandleAnimation(inputValue);
+        characterMovement.HandleMovement(out inputValue, out isRunning);
+        characterMovement.HandleRotation();
+        characterAnimator.HandleAnimation(inputValue, isRunning);
     }
 
     private void SetUp()
@@ -26,16 +30,6 @@ public class PlayerControl : MonoBehaviour
         characterAnimator = GetComponent<CharacterAnimator>();
         CharacterController controller = GetComponent<CharacterController>();
         Animator animator = GetComponentInChildren<Animator>();
-
-        if (!characterMovement)
-        {
-            characterMovement = gameObject.AddComponent<CharacterMovement>();
-        }
-
-        if (!characterAnimator)
-        {
-            characterAnimator = gameObject.AddComponent<CharacterAnimator>();
-        }
 
         if (!controller)
         {
