@@ -4,21 +4,24 @@ using UnityEngine.InputSystem;
 
 public class CharacterMovement : MonoBehaviour
 {
+    public HandCollider handCollider = null;
     public float speed = 1.0f;
     public float runSpeedMultiplier = 2.0f;
     [Range(0.1f, 1f)]
     public float maxBackwardsSpeedValue = -0.3f;
+    public float attackCooldown = 0.5f;
 
     private CharacterController controller;
     private Vector3 moveInputValue;
     private bool isRunningPressed;
     private bool isInAttackMode;
+    private float attackCooldownTime;
 
     private Action<bool> onAttackModePressed;
-    private Action<bool> onAttackPressed;
+    private Action onAttackPressed;
 
     public Action<bool> OnAttackModePressed { get => onAttackModePressed; set => onAttackModePressed = value; }
-    public Action<bool> OnAttackPressed { get => onAttackPressed; set => onAttackPressed = value; }
+    public Action OnAttackPressed { get => onAttackPressed; set => onAttackPressed = value; }
 
     public void SetUp(CharacterController controller)
     {
@@ -26,6 +29,9 @@ public class CharacterMovement : MonoBehaviour
         moveInputValue = Vector2.zero;
         isRunningPressed = false;
         isInAttackMode = false;
+        attackCooldownTime = attackCooldown;
+
+        handCollider.OnEnemyCollision += OnEnemyHit;
     }
 
     public void HandleMovement(out float inputValue, out bool isRunning)
@@ -34,6 +40,10 @@ public class CharacterMovement : MonoBehaviour
         Vector3 velocity = moveInputValue * Time.deltaTime * (isRunningPressed ? speed * runSpeedMultiplier : speed);
 
         controller.Move(velocity);
+
+        attackCooldownTime = Mathf.Clamp(attackCooldownTime - Time.deltaTime, 0.0f, attackCooldown);
+        if (attackCooldownTime <= 0 && handCollider.Collider.enabled)
+            SetHandColliderStatus(false);
 
         float inputX = Mathf.Abs(moveInputValue.x);
         float inputZ = Mathf.Abs(moveInputValue.z);
@@ -51,6 +61,11 @@ public class CharacterMovement : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(lookAtPosition);
 
         transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, 1.0f);
+    }
+
+    private void SetHandColliderStatus(bool enabled)
+    {
+        handCollider.Collider.enabled = enabled;
     }
 
     private void OnMovement(InputValue value)
@@ -72,7 +87,20 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnAttack()
     {
-        if (isInAttackMode)
-            onAttackPressed?.Invoke(true);
+        if (!isInAttackMode)
+            return;
+
+        if (attackCooldownTime <= 0.0f)
+        {
+            onAttackPressed?.Invoke();
+            attackCooldownTime = attackCooldown;
+            SetHandColliderStatus(true);
+        }
+
+    }
+
+    private void OnEnemyHit(Enemy enemy)
+    {
+        Debug.Log(enemy.name);
     }
 }

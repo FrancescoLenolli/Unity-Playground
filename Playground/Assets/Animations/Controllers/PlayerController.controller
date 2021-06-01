@@ -51,13 +51,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e367fab9ce02b64ba1710d68a954ceb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SetBool:
+  OnAction:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4911597178952349930, guid: 973af55933c268540a83874e526a3b0f,
+      - m_Target: {fileID: 4911597178952349933, guid: 973af55933c268540a83874e526a3b0f,
           type: 3}
-        m_MethodName: AttackAnimation
-        m_Mode: 6
+        m_MethodName: EnableHandCollider
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -88,7 +88,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 88b519ded87a23c448584c9fee961ffd, type: 2}
+  m_Motion: {fileID: 7400000, guid: cadf3b51bc7bae8468d45efcf1d9a74b, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -142,7 +142,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: a7cce44579e9e914b8d6fa0a68882c6b, type: 2}
+  m_Motion: {fileID: 7400000, guid: 8249768da65792444b866fd13146029f, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -187,25 +187,25 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: VelocityX
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: VelocityZ
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: isAttacking
-    m_Type: 4
+    m_Controller: {fileID: 0}
+  - m_Name: Attack
+    m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -283,10 +283,7 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 2
-    m_ConditionEvent: isAttacking
-    m_EventTreshold: 0
+  m_Conditions: []
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -1003547094096134249}
   m_Solo: 0
@@ -335,7 +332,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: isAttacking
+    m_ConditionEvent: Attack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -4872098911447681683}

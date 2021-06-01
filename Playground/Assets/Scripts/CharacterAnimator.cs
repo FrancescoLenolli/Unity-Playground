@@ -7,8 +7,8 @@ public class CharacterAnimator : MonoBehaviour
 
     private Animator animator;
     private int velocityXHash;
+    private int attackTriggerHash;
     private int fightingLayerIndex;
-    private int isAttackingHash;
     private float velocityX;
 
     public void SetUp(Animator animator)
@@ -16,7 +16,7 @@ public class CharacterAnimator : MonoBehaviour
         this.animator = animator;
         fightingLayerIndex = animator.GetLayerIndex("Fighting");
         velocityXHash = Animator.StringToHash("VelocityX");
-        isAttackingHash = Animator.StringToHash("isAttacking");
+        attackTriggerHash = Animator.StringToHash("Attack");
         velocityX = 0.0f;
     }
 
@@ -32,8 +32,8 @@ public class CharacterAnimator : MonoBehaviour
         animator.SetLayerWeight(fightingLayerIndex, isFighting ? 1 : 0);
     }   
     
-    public void AttackAnimation(bool isAttacking)
+    public void AttackAnimation()
     {
-        animator.SetBool(isAttackingHash, isAttacking);
+        animator.SetTrigger(attackTriggerHash);
     }
 }
