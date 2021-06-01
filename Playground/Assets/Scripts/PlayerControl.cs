@@ -14,7 +14,7 @@ public class PlayerControl : MonoBehaviour
         SetUp();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         float inputValue = 0.0f;
         bool isRunning = false;
@@ -28,16 +28,16 @@ public class PlayerControl : MonoBehaviour
     {
         characterMovement = GetComponent<CharacterMovement>();
         characterAnimator = GetComponent<CharacterAnimator>();
-        CharacterController controller = GetComponent<CharacterController>();
+        Rigidbody rb = GetComponent<Rigidbody>();
         Animator animator = GetComponentInChildren<Animator>();
 
-        if (!controller)
+        if (!rb)
         {
-            Debug.LogWarning($"{gameObject.name} missing CharacterController component!");
+            Debug.LogWarning($"{gameObject.name} missing Rigidbody component!");
         }
         else
         {
-            characterMovement.SetUp(controller);
+            characterMovement.SetUp(rb);
         }
 
         if (!animator)

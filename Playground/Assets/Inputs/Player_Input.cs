@@ -49,6 +49,14 @@ public class @Player_Input : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""b8969b0c-b666-4d09-ab5a-5b4ce38c5d73"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -95,6 +103,17 @@ public class @Player_Input : IInputActionCollection, IDisposable
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""948da8bf-1164-41f9-8256-6c99077eb309"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -107,6 +126,7 @@ public class @Player_Input : IInputActionCollection, IDisposable
         m_CharacterControl_Run = m_CharacterControl.FindAction("Run", throwIfNotFound: true);
         m_CharacterControl_AttackMode = m_CharacterControl.FindAction("AttackMode", throwIfNotFound: true);
         m_CharacterControl_Attack = m_CharacterControl.FindAction("Attack", throwIfNotFound: true);
+        m_CharacterControl_Jump = m_CharacterControl.FindAction("Jump", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -160,6 +180,7 @@ public class @Player_Input : IInputActionCollection, IDisposable
     private readonly InputAction m_CharacterControl_Run;
     private readonly InputAction m_CharacterControl_AttackMode;
     private readonly InputAction m_CharacterControl_Attack;
+    private readonly InputAction m_CharacterControl_Jump;
     public struct CharacterControlActions
     {
         private @Player_Input m_Wrapper;
@@ -168,6 +189,7 @@ public class @Player_Input : IInputActionCollection, IDisposable
         public InputAction @Run => m_Wrapper.m_CharacterControl_Run;
         public InputAction @AttackMode => m_Wrapper.m_CharacterControl_AttackMode;
         public InputAction @Attack => m_Wrapper.m_CharacterControl_Attack;
+        public InputAction @Jump => m_Wrapper.m_CharacterControl_Jump;
         public InputActionMap Get() { return m_Wrapper.m_CharacterControl; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -189,6 +211,9 @@ public class @Player_Input : IInputActionCollection, IDisposable
                 @Attack.started -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnAttack;
                 @Attack.performed -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnAttack;
                 @Attack.canceled -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnAttack;
+                @Jump.started -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnJump;
             }
             m_Wrapper.m_CharacterControlActionsCallbackInterface = instance;
             if (instance != null)
@@ -205,6 +230,9 @@ public class @Player_Input : IInputActionCollection, IDisposable
                 @Attack.started += instance.OnAttack;
                 @Attack.performed += instance.OnAttack;
                 @Attack.canceled += instance.OnAttack;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
             }
         }
     }
@@ -215,5 +243,6 @@ public class @Player_Input : IInputActionCollection, IDisposable
         void OnRun(InputAction.CallbackContext context);
         void OnAttackMode(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
 }

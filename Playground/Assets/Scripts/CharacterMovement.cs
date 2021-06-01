@@ -10,12 +10,16 @@ public class CharacterMovement : MonoBehaviour
     [Range(0.1f, 1f)]
     public float maxBackwardsSpeedValue = -0.3f;
     public float attackCooldown = 0.5f;
+    public float jumpForce = 1.0f;
+    public float jumpTime = 1.0f;
 
-    private CharacterController controller;
+    private new Rigidbody rigidbody;
     private Vector3 moveInputValue;
     private bool isRunningPressed;
     private bool isInAttackMode;
+    private bool isJumping;
     private float attackCooldownTime;
+    private float jumpTimeValue;
 
     private Action<bool> onAttackModePressed;
     private Action onAttackPressed;
@@ -23,13 +27,14 @@ public class CharacterMovement : MonoBehaviour
     public Action<bool> OnAttackModePressed { get => onAttackModePressed; set => onAttackModePressed = value; }
     public Action OnAttackPressed { get => onAttackPressed; set => onAttackPressed = value; }
 
-    public void SetUp(CharacterController controller)
+    public void SetUp(Rigidbody rigidbody)
     {
-        this.controller = controller;
+        this.rigidbody = rigidbody;
         moveInputValue = Vector2.zero;
         isRunningPressed = false;
         isInAttackMode = false;
         attackCooldownTime = attackCooldown;
+        jumpTimeValue = 0.0f;
 
         handCollider.OnEnemyCollision += OnEnemyHit;
     }
@@ -38,12 +43,12 @@ public class CharacterMovement : MonoBehaviour
     {
         moveInputValue.z = Mathf.Clamp(moveInputValue.z, -maxBackwardsSpeedValue, 1.0f);
         Vector3 velocity = moveInputValue * Time.deltaTime * (isRunningPressed ? speed * runSpeedMultiplier : speed);
+        Vector3 newPosition = transform.position + velocity;
 
-        controller.Move(velocity);
+        rigidbody.MovePosition(newPosition);
 
-        attackCooldownTime = Mathf.Clamp(attackCooldownTime - Time.deltaTime, 0.0f, attackCooldown);
-        if (attackCooldownTime <= 0 && handCollider.Collider.enabled)
-            SetHandColliderStatus(false);
+        HandleJump();
+        HandleAttack();
 
         float inputX = Mathf.Abs(moveInputValue.x);
         float inputZ = Mathf.Abs(moveInputValue.z);
@@ -66,6 +71,33 @@ public class CharacterMovement : MonoBehaviour
     private void SetHandColliderStatus(bool enabled)
     {
         handCollider.Collider.enabled = enabled;
+    }
+
+    private void OnEnemyHit(Enemy enemy)
+    {
+        Debug.Log(enemy.name);
+    }
+
+    private void HandleJump()
+    {
+        if (jumpTimeValue >= 0.0f)
+        {
+            Jump();
+            jumpTimeValue -= Time.fixedDeltaTime;
+        }
+    }
+
+    private void HandleAttack()
+    {
+        attackCooldownTime = Mathf.Clamp(attackCooldownTime - Time.deltaTime, 0.0f, attackCooldown);
+        if (attackCooldownTime <= 0 && handCollider.Collider.enabled)
+            SetHandColliderStatus(false);
+    }
+
+    private void Jump()
+    {
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
     private void OnMovement(InputValue value)
@@ -96,11 +128,11 @@ public class CharacterMovement : MonoBehaviour
             attackCooldownTime = attackCooldown;
             SetHandColliderStatus(true);
         }
-
     }
 
-    private void OnEnemyHit(Enemy enemy)
+    private void OnJump(InputValue value)
     {
-        Debug.Log(enemy.name);
+        isJumping = value.isPressed;
+        jumpTimeValue = isJumping ? jumpTime : -1.0f;
     }
 }
