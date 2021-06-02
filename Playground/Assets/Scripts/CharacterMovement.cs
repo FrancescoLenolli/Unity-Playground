@@ -41,8 +41,9 @@ public class CharacterMovement : MonoBehaviour
 
     public void HandleMovement(out float inputValue, out bool isRunning)
     {
+        bool canRun = isRunningPressed && IsGrounded();
         moveInputValue.z = Mathf.Clamp(moveInputValue.z, -maxBackwardsSpeedValue, 1.0f);
-        Vector3 velocity = moveInputValue * Time.deltaTime * (isRunningPressed ? speed * runSpeedMultiplier : speed);
+        Vector3 velocity = moveInputValue * Time.deltaTime * (canRun ? speed * runSpeedMultiplier : speed);
         Vector3 newPosition = transform.position + velocity;
 
         rigidbody.MovePosition(newPosition);
@@ -53,7 +54,7 @@ public class CharacterMovement : MonoBehaviour
         float inputX = Mathf.Abs(moveInputValue.x);
         float inputZ = Mathf.Abs(moveInputValue.z);
         inputValue = inputX + inputZ;
-        isRunning = isRunningPressed;
+        isRunning = canRun;
     }
 
     public void HandleRotation()
@@ -80,7 +81,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void HandleJump()
     {
-        if (jumpTimeValue >= 0.0f)
+        if (jumpTimeValue > 0.0f)
         {
             Jump();
             jumpTimeValue -= Time.fixedDeltaTime;
@@ -99,6 +100,19 @@ public class CharacterMovement : MonoBehaviour
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
+
+    private bool IsGrounded()
+    {
+        RaycastHit hitInfo;
+        float offset = 0.1f;
+        Vector3 startPoint = new Vector3(transform.position.x, transform.position.y + offset, transform.position.z);
+        Vector3 direction = Vector3.down;
+
+        Physics.Raycast(startPoint, direction, out hitInfo, 0.1f + offset);
+        return hitInfo.transform != null;
+    }
+
+    //---------- PlayerInput methods ----------//
 
     private void OnMovement(InputValue value)
     {
@@ -133,6 +147,6 @@ public class CharacterMovement : MonoBehaviour
     private void OnJump(InputValue value)
     {
         isJumping = value.isPressed;
-        jumpTimeValue = isJumping ? jumpTime : -1.0f;
+        jumpTimeValue = isJumping && IsGrounded() ? jumpTime : -1.0f;
     }
 }
