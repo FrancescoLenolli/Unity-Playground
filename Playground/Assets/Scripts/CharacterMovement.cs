@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -35,7 +36,7 @@ public class CharacterMovement : MonoBehaviour
         moveInputValue = Vector2.zero;
         isRunningPressed = false;
         isInAttackMode = false;
-        attackCooldownTime = attackCooldown;
+        attackCooldownTime = 0.0f;
         jumpTimeValue = 0.0f;
 
         handCollider.OnEnemyCollision += OnEnemyHit;
@@ -52,7 +53,6 @@ public class CharacterMovement : MonoBehaviour
         rigidbody.MovePosition(newPosition);
 
         HandleJump();
-        HandleAttack();
 
         if (isGrounded && jumpTimeValue <= 0.0f)
             rigidbody.useGravity = false;
@@ -96,11 +96,9 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    private void HandleAttack()
+    private void Attack()
     {
-        attackCooldownTime = Mathf.Clamp(attackCooldownTime - Time.deltaTime, 0.0f, attackCooldown);
-        if (attackCooldownTime <= 0 && handCollider.Collider.enabled)
-            SetHandColliderStatus(false);
+        StartCoroutine(AttackRoutine());
     }
 
     private void Jump()
@@ -149,12 +147,10 @@ public class CharacterMovement : MonoBehaviour
         if (!isInAttackMode)
             return;
 
-        if (attackCooldownTime <= 0.0f)
-        {
-            onAttackPressed?.Invoke();
-            attackCooldownTime = attackCooldown;
-            SetHandColliderStatus(true);
-        }
+        if (attackCooldownTime > 0.0f)
+            return;
+
+        Attack();
     }
 
     private void OnJump(InputValue value)
@@ -162,15 +158,30 @@ public class CharacterMovement : MonoBehaviour
         isJumping = value.isPressed;
         bool canJump = isJumping && IsGrounded();
 
-        if(canJump)
+        if (canJump)
         {
             jumpTimeValue = jumpTime;
             onJumpPressed?.Invoke();
-
         }
         else
         {
             jumpTimeValue = 0.0f;
         }
+    }
+
+    private IEnumerator AttackRoutine()
+    {
+        onAttackPressed?.Invoke();
+        attackCooldownTime = attackCooldown;
+        SetHandColliderStatus(true);
+
+        while (attackCooldownTime > 0.0f)
+        {
+            attackCooldownTime = Mathf.Clamp(attackCooldownTime - Time.deltaTime, 0.0f, attackCooldown);
+            yield return null;
+        }
+
+        SetHandColliderStatus(false);
+        yield return null;
     }
 }

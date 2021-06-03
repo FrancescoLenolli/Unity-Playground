@@ -689,6 +689,11 @@ PrefabInstance:
       propertyPath: m_Mass
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4530921611543456858, guid: 973af55933c268540a83874e526a3b0f,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4559864933765458066, guid: 973af55933c268540a83874e526a3b0f,
         type: 3}
       propertyPath: m_Layer
@@ -733,6 +738,11 @@ PrefabInstance:
         type: 3}
       propertyPath: jumpForce
       value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4911597178952349933, guid: 973af55933c268540a83874e526a3b0f,
+        type: 3}
+      propertyPath: attackCooldown
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4911597178952349933, guid: 973af55933c268540a83874e526a3b0f,
         type: 3}

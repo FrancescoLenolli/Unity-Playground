@@ -8,6 +8,7 @@ public class CharacterAnimator : MonoBehaviour
     private Animator animator;
     private int velocityXHash;
     private int attackTriggerHash;
+    private int jumpTriggerHash;
     private int fightingLayerIndex;
     private float velocityX;
 
@@ -17,6 +18,7 @@ public class CharacterAnimator : MonoBehaviour
         fightingLayerIndex = animator.GetLayerIndex("Fighting");
         velocityXHash = Animator.StringToHash("VelocityX");
         attackTriggerHash = Animator.StringToHash("Attack");
+        jumpTriggerHash = Animator.StringToHash("Jump");
         velocityX = 0.0f;
     }
 
@@ -35,5 +37,10 @@ public class CharacterAnimator : MonoBehaviour
     public void AttackAnimation()
     {
         animator.SetTrigger(attackTriggerHash);
+    }
+
+    public void JumpAnimation()
+    {
+        animator.SetTrigger(jumpTriggerHash);
     }
 }
