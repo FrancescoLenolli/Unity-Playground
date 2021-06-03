@@ -23,9 +23,11 @@ public class CharacterMovement : MonoBehaviour
 
     private Action<bool> onAttackModePressed;
     private Action onAttackPressed;
+    private Action onJumpPressed;
 
     public Action<bool> OnAttackModePressed { get => onAttackModePressed; set => onAttackModePressed = value; }
     public Action OnAttackPressed { get => onAttackPressed; set => onAttackPressed = value; }
+    public Action OnJumpPressed { get => onJumpPressed; set => onJumpPressed = value; }
 
     public void SetUp(Rigidbody rigidbody)
     {
@@ -41,7 +43,8 @@ public class CharacterMovement : MonoBehaviour
 
     public void HandleMovement(out float inputValue, out bool isRunning)
     {
-        bool canRun = isRunningPressed && IsGrounded();
+        bool isGrounded = IsGrounded();
+        bool canRun = isRunningPressed && isGrounded;
         moveInputValue.z = Mathf.Clamp(moveInputValue.z, -maxBackwardsSpeedValue, 1.0f);
         Vector3 velocity = moveInputValue * Time.deltaTime * (canRun ? speed * runSpeedMultiplier : speed);
         Vector3 newPosition = transform.position + velocity;
@@ -50,6 +53,11 @@ public class CharacterMovement : MonoBehaviour
 
         HandleJump();
         HandleAttack();
+
+        if (isGrounded && jumpTimeValue <= 0.0f)
+            rigidbody.useGravity = false;
+        else
+            rigidbody.useGravity = true;
 
         float inputX = Mathf.Abs(moveInputValue.x);
         float inputZ = Mathf.Abs(moveInputValue.z);
@@ -112,6 +120,11 @@ public class CharacterMovement : MonoBehaviour
         return hitInfo.transform != null;
     }
 
+    private bool isFalling()
+    {
+        return rigidbody.velocity.y < 0.0f;
+    }
+
     //---------- PlayerInput methods ----------//
 
     private void OnMovement(InputValue value)
@@ -147,6 +160,17 @@ public class CharacterMovement : MonoBehaviour
     private void OnJump(InputValue value)
     {
         isJumping = value.isPressed;
-        jumpTimeValue = isJumping && IsGrounded() ? jumpTime : -1.0f;
+        bool canJump = isJumping && IsGrounded();
+
+        if(canJump)
+        {
+            jumpTimeValue = jumpTime;
+            onJumpPressed?.Invoke();
+
+        }
+        else
+        {
+            jumpTimeValue = 0.0f;
+        }
     }
 }

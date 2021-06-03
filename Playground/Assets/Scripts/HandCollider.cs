@@ -20,6 +20,9 @@ public class HandCollider : MonoBehaviour
         Enemy enemy = other.gameObject.GetComponent<Enemy>();
 
         if (enemy)
+        {
+            myCollider.enabled = false;
             onEnemyCollision?.Invoke(enemy);
+        }
     }
 }
