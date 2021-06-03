@@ -24,11 +24,11 @@ public class CharacterMovement : MonoBehaviour
 
     private Action<bool> onAttackModePressed;
     private Action onAttackPressed;
-    private Action onJumpPressed;
+    private Action onJumping;
 
     public Action<bool> OnAttackModePressed { get => onAttackModePressed; set => onAttackModePressed = value; }
     public Action OnAttackPressed { get => onAttackPressed; set => onAttackPressed = value; }
-    public Action OnJumpPressed { get => onJumpPressed; set => onJumpPressed = value; }
+    public Action OnJumping { get => onJumping; set => onJumping = value; }
 
     public void SetUp(Rigidbody rigidbody)
     {
@@ -89,10 +89,15 @@ public class CharacterMovement : MonoBehaviour
 
     private void HandleJump()
     {
-        if (jumpTimeValue > 0.0f)
+        if (isJumping && jumpTimeValue > 0.0f)
         {
             Jump();
             jumpTimeValue -= Time.fixedDeltaTime;
+        }
+        else if(isJumping && IsGrounded())
+        {
+            isJumping = false;
+            onJumping.Invoke();
         }
     }
 
@@ -155,13 +160,13 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnJump(InputValue value)
     {
-        isJumping = value.isPressed;
-        bool canJump = isJumping && IsGrounded();
+        bool canJump = value.isPressed && IsGrounded();
 
         if (canJump)
         {
+            isJumping = true;
             jumpTimeValue = jumpTime;
-            onJumpPressed?.Invoke();
+            onJumping?.Invoke();
         }
         else
         {

@@ -51,6 +51,6 @@ public class PlayerControl : MonoBehaviour
 
         characterMovement.OnAttackModePressed += characterAnimator.SetFightingStanceAnimation;
         characterMovement.OnAttackPressed += characterAnimator.AttackAnimation;
-        characterMovement.OnJumpPressed += characterAnimator.JumpAnimation;
+        characterMovement.OnJumping += characterAnimator.JumpAnimation;
     }
 }
