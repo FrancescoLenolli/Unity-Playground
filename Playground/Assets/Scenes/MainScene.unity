@@ -851,6 +851,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6688759055988816096, guid: 973af55933c268540a83874e526a3b0f,
         type: 3}
+      propertyPath: m_Name
+      value: YBot_Model_Alt
+      objectReference: {fileID: 0}
+    - target: {fileID: 6688759055988816096, guid: 973af55933c268540a83874e526a3b0f,
+        type: 3}
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
