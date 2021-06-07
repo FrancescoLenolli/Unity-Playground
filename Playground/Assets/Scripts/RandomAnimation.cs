@@ -8,4 +8,5 @@ public class RandomAnimation : StateMachineBehaviour
 
         animator.SetInteger("Punch_Index", Random.Range(0, 3));
     }
+
 }

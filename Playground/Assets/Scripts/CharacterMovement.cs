@@ -25,10 +25,12 @@ public class CharacterMovement : MonoBehaviour
     private Action<bool> onAttackModePressed;
     private Action onAttackPressed;
     private Action onJumping;
+    private Action<Vector3> onRotateCamera;
 
     public Action<bool> OnAttackModePressed { get => onAttackModePressed; set => onAttackModePressed = value; }
     public Action OnAttackPressed { get => onAttackPressed; set => onAttackPressed = value; }
     public Action OnJumping { get => onJumping; set => onJumping = value; }
+    public Action<Vector3> OnRotatingCamera { get => onRotateCamera; set => onRotateCamera = value; }
 
     public void SetUp(Rigidbody rigidbody)
     {
@@ -173,6 +175,14 @@ public class CharacterMovement : MonoBehaviour
             jumpTimeValue = 0.0f;
         }
     }
+
+    private void OnRotateCamera(InputValue value)
+    {
+        Vector2 inputValue = value.Get<Vector2>();
+        onRotateCamera?.Invoke(new Vector3(inputValue.x, inputValue.y, 0.0f));
+    }
+
+    //----------------------------------------//
 
     private IEnumerator AttackRoutine()
     {

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(CharacterMovement))]
 [RequireComponent(typeof(CharacterAnimator))]
@@ -8,6 +6,7 @@ public class PlayerControl : MonoBehaviour
 {
     private CharacterMovement characterMovement;
     private CharacterAnimator characterAnimator;
+    private ThirdPersonCamera mainCamera;
 
     private void Awake()
     {
@@ -28,29 +27,25 @@ public class PlayerControl : MonoBehaviour
     {
         characterMovement = GetComponent<CharacterMovement>();
         characterAnimator = GetComponent<CharacterAnimator>();
+        mainCamera = FindObjectOfType<ThirdPersonCamera>();
+
         Rigidbody rb = GetComponent<Rigidbody>();
         Animator animator = GetComponentInChildren<Animator>();
 
         if (!rb)
-        {
             Debug.LogWarning($"{gameObject.name} missing Rigidbody component!");
-        }
         else
-        {
             characterMovement.SetUp(rb);
-        }
 
         if (!animator)
-        {
             Debug.LogWarning($"{gameObject.name} model missing Animator component!");
-        }
         else
-        {
             characterAnimator.SetUp(animator);
-        }
 
         characterMovement.OnAttackModePressed += characterAnimator.SetFightingStanceAnimation;
         characterMovement.OnAttackPressed += characterAnimator.AttackAnimation;
         characterMovement.OnJumping += characterAnimator.JumpAnimation;
+        if (mainCamera)
+            characterMovement.OnRotatingCamera += mainCamera.SetInputValue;
     }
 }
