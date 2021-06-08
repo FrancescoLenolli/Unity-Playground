@@ -78,7 +78,8 @@ public class CharacterMovement : MonoBehaviour
         Quaternion currentRotation = transform.rotation;
         Quaternion targetRotation = Quaternion.LookRotation(lookAtPosition);
 
-        transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, 1.0f);
+        if (targetRotation != new Quaternion(0, 0, 0, 0))
+            transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, 1.0f);
     }
 
     private void SetHandColliderStatus(bool enabled)
@@ -98,7 +99,7 @@ public class CharacterMovement : MonoBehaviour
             Jump();
             jumpTimeValue -= Time.fixedDeltaTime;
         }
-        else if(isJumping && IsGrounded())
+        else if (isJumping && IsGrounded())
         {
             isJumping = false;
             onJumping.Invoke();
