@@ -15,6 +15,7 @@ public class CharacterMovement : MonoBehaviour
     public float jumpTime = 1.0f;
 
     private new Rigidbody rigidbody;
+    Camera mainCamera;
     private Vector3 moveInputValue;
     private bool isRunningPressed;
     private bool isInAttackMode;
@@ -40,6 +41,7 @@ public class CharacterMovement : MonoBehaviour
         isInAttackMode = false;
         attackCooldownTime = 0.0f;
         jumpTimeValue = 0.0f;
+        mainCamera = Camera.main;
 
         handCollider.OnEnemyCollision += OnEnemyHit;
     }
@@ -136,6 +138,7 @@ public class CharacterMovement : MonoBehaviour
     {
         Vector2 inputValue = value.Get<Vector2>();
         moveInputValue = new Vector3(inputValue.x, 0, inputValue.y);
+        moveInputValue = inputValue.y * mainCamera.transform.forward + inputValue.x * mainCamera.transform.right;
     }
 
     private void OnRun(InputValue value)
