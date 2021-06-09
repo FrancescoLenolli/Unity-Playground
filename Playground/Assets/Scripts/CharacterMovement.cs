@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CharacterMovement : MonoBehaviour
 {
     public HandCollider handCollider = null;
+    public Transform cameraFollow = null;
+    public float rotateCameraSpeed = 1.0f;
     public float speed = 1.0f;
     public float runSpeedMultiplier = 2.0f;
     [Range(0.1f, 1f)]
@@ -17,6 +20,7 @@ public class CharacterMovement : MonoBehaviour
     private new Rigidbody rigidbody;
     Camera mainCamera;
     private Vector3 moveInputValue;
+    private Vector3 rotationInputValue;
     private bool isRunningPressed;
     private bool isInAttackMode;
     private bool isJumping;
@@ -57,6 +61,7 @@ public class CharacterMovement : MonoBehaviour
         rigidbody.MovePosition(newPosition);
 
         HandleJump();
+        HandleCameraRotation();
 
         if (isGrounded && jumpTimeValue <= 0.0f)
             rigidbody.useGravity = false;
@@ -78,8 +83,15 @@ public class CharacterMovement : MonoBehaviour
         Quaternion currentRotation = transform.rotation;
         Quaternion targetRotation = Quaternion.LookRotation(lookAtPosition);
 
-        if (targetRotation != new Quaternion(0, 0, 0, 0))
-            transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, 1.0f);
+        transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, 1.0f);
+    }
+
+    public void HandleCameraRotation()
+    {
+        Vector3 rotationVector = rotationInputValue * Time.deltaTime * rotateCameraSpeed;
+        rotationVector.z = 0.0f;
+        cameraFollow.Rotate(rotationVector);
+        cameraFollow.rotation = Quaternion.Euler(cameraFollow.rotation.eulerAngles.x, cameraFollow.rotation.eulerAngles.y, 0.0f);
     }
 
     private void SetHandColliderStatus(bool enabled)
@@ -138,8 +150,12 @@ public class CharacterMovement : MonoBehaviour
     private void OnMovement(InputValue value)
     {
         Vector2 inputValue = value.Get<Vector2>();
-        moveInputValue = new Vector3(inputValue.x, 0, inputValue.y);
-        moveInputValue = inputValue.y * mainCamera.transform.forward + inputValue.x * mainCamera.transform.right;
+        Vector3 newMoveInputValue = new Vector3(inputValue.x, 0, inputValue.y);
+
+        //newMoveInputValue = inputValue.y * mainCamera.transform.forward + inputValue.x * mainCamera.transform.right;
+        //newMoveInputValue = new Vector3(newMoveInputValue.x, 0.0f, newMoveInputValue.z);
+
+        moveInputValue = newMoveInputValue;
     }
 
     private void OnRun(InputValue value)
@@ -182,8 +198,8 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnRotateCamera(InputValue value)
     {
-        Vector2 inputValue = value.Get<Vector2>();
-        onRotateCamera?.Invoke(new Vector3(inputValue.x, inputValue.y, 0.0f));
+        Vector2 input = value.Get<Vector2>();
+        rotationInputValue = Vector3.Normalize(new Vector3(input.y, input.x, 0));
     }
 
     //----------------------------------------//

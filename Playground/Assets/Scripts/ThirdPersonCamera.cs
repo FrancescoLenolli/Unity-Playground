@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ThirdPersonCamera : MonoBehaviour
 {
@@ -29,8 +27,15 @@ public class ThirdPersonCamera : MonoBehaviour
 
         cameraPosition = lookAtTarget.position + cameraOffset;
 
+        //float maxValue = 50.0f;
+        //float minValue = 1.0f;
+
         transform.position = Vector3.Lerp(transform.position, cameraPosition, smoothness * Time.fixedDeltaTime);
         transform.LookAt(lookAtTarget);
+
+        //float currentVerticalRotation = Mathf.Clamp(transform.rotation.eulerAngles.x, minValue, maxValue);
+        //Vector3 newRotation = new Vector3(currentVerticalRotation, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+        //transform.rotation = Quaternion.Euler(newRotation);
     }
 
     public void SetInputValue(Vector3 inputValue)
