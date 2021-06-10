@@ -7,7 +7,6 @@ using UnityEngine.InputSystem;
 public class CharacterMovement : MonoBehaviour
 {
     public HandCollider handCollider = null;
-    public Transform cameraFollow = null;
     public float rotateCameraSpeed = 1.0f;
     public float speed = 1.0f;
     public float runSpeedMultiplier = 2.0f;
@@ -18,7 +17,7 @@ public class CharacterMovement : MonoBehaviour
     public float jumpTime = 1.0f;
 
     private new Rigidbody rigidbody;
-    Camera mainCamera;
+    private Transform cameraTarget;
     private Vector3 moveInputValue;
     private Vector3 rotationInputValue;
     private bool isRunningPressed;
@@ -37,15 +36,15 @@ public class CharacterMovement : MonoBehaviour
     public Action OnJumping { get => onJumping; set => onJumping = value; }
     public Action<Vector3> OnRotatingCamera { get => onRotateCamera; set => onRotateCamera = value; }
 
-    public void SetUp(Rigidbody rigidbody)
+    public void SetUp(Rigidbody rigidbody, Transform cameraTarget)
     {
         this.rigidbody = rigidbody;
+        this.cameraTarget = cameraTarget;
         moveInputValue = Vector2.zero;
         isRunningPressed = false;
         isInAttackMode = false;
         attackCooldownTime = 0.0f;
         jumpTimeValue = 0.0f;
-        mainCamera = Camera.main;
 
         handCollider.OnEnemyCollision += OnEnemyHit;
     }
@@ -61,7 +60,6 @@ public class CharacterMovement : MonoBehaviour
         rigidbody.MovePosition(newPosition);
 
         HandleJump();
-        HandleCameraRotation();
 
         if (isGrounded && jumpTimeValue <= 0.0f)
             rigidbody.useGravity = false;
@@ -84,14 +82,6 @@ public class CharacterMovement : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(lookAtPosition);
 
         transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, 1.0f);
-    }
-
-    public void HandleCameraRotation()
-    {
-        Vector3 rotationVector = rotationInputValue * Time.deltaTime * rotateCameraSpeed;
-        rotationVector.z = 0.0f;
-        cameraFollow.Rotate(rotationVector);
-        cameraFollow.rotation = Quaternion.Euler(cameraFollow.rotation.eulerAngles.x, cameraFollow.rotation.eulerAngles.y, 0.0f);
     }
 
     private void SetHandColliderStatus(bool enabled)
@@ -152,8 +142,11 @@ public class CharacterMovement : MonoBehaviour
         Vector2 inputValue = value.Get<Vector2>();
         Vector3 newMoveInputValue = new Vector3(inputValue.x, 0, inputValue.y);
 
-        //newMoveInputValue = inputValue.y * mainCamera.transform.forward + inputValue.x * mainCamera.transform.right;
-        //newMoveInputValue = new Vector3(newMoveInputValue.x, 0.0f, newMoveInputValue.z);
+        if (cameraTarget)
+        {
+            newMoveInputValue = inputValue.y * cameraTarget.transform.forward + inputValue.x * cameraTarget.transform.right;
+            newMoveInputValue = new Vector3(newMoveInputValue.x, 0.0f, newMoveInputValue.z);
+        }
 
         moveInputValue = newMoveInputValue;
     }
@@ -199,7 +192,9 @@ public class CharacterMovement : MonoBehaviour
     private void OnRotateCamera(InputValue value)
     {
         Vector2 input = value.Get<Vector2>();
-        rotationInputValue = Vector3.Normalize(new Vector3(input.y, input.x, 0));
+        rotationInputValue = new Vector3(input.y, input.x, 0);
+
+        OnRotatingCamera?.Invoke(rotationInputValue);
     }
 
     //----------------------------------------//

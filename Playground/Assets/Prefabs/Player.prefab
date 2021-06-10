@@ -108,7 +108,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -0.381}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 8509800016875435898}
   - {fileID: 6312056840076370522}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -199,6 +198,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handCollider: {fileID: 4798701988398231529}
+  cameraFollow: {fileID: 0}
+  rotateCameraSpeed: 1
   speed: 2
   runSpeedMultiplier: 4
   maxBackwardsSpeedValue: 1
@@ -218,36 +219,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxAnimationValue: 2
---- !u!1 &6384819819314934785
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8509800016875435898}
-  m_Layer: 0
-  m_Name: CameraLookAtTarget
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8509800016875435898
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6384819819314934785}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.85, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4911597178952349934}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &956853463139868147
 Animator:
   serializedVersion: 3
@@ -277,7 +248,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: ac6750523143e414f912fc3565bb07ba,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ac6750523143e414f912fc3565bb07ba,
         type: 3}
