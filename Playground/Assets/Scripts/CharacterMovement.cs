@@ -14,7 +14,6 @@ public class CharacterMovement : MonoBehaviour
     public float maxBackwardsSpeedValue = -0.3f;
     public float attackCooldown = 0.5f;
     public float jumpForce = 1.0f;
-    public float jumpTime = 1.0f;
 
     private new Rigidbody rigidbody;
     private Transform cameraTarget;
@@ -22,18 +21,18 @@ public class CharacterMovement : MonoBehaviour
     private Vector3 rotationInputValue;
     private bool isRunningPressed;
     private bool isInAttackMode;
+    private bool canJump;
     private bool isJumping;
     private float attackCooldownTime;
-    private float jumpTimeValue;
 
     private Action<bool> onAttackModePressed;
     private Action onAttackPressed;
-    private Action onJumping;
+    private Action<bool> onJumping;
     private Action<Vector3> onRotateCamera;
 
     public Action<bool> OnAttackModePressed { get => onAttackModePressed; set => onAttackModePressed = value; }
     public Action OnAttackPressed { get => onAttackPressed; set => onAttackPressed = value; }
-    public Action OnJumping { get => onJumping; set => onJumping = value; }
+    public Action<bool> OnJumping { get => onJumping; set => onJumping = value; }
     public Action<Vector3> OnRotatingCamera { get => onRotateCamera; set => onRotateCamera = value; }
 
     public void SetUp(Rigidbody rigidbody, Transform cameraTarget)
@@ -43,8 +42,8 @@ public class CharacterMovement : MonoBehaviour
         moveInputValue = Vector2.zero;
         isRunningPressed = false;
         isInAttackMode = false;
+        isJumping = false;
         attackCooldownTime = 0.0f;
-        jumpTimeValue = 0.0f;
 
         handCollider.OnEnemyCollision += OnEnemyHit;
     }
@@ -59,9 +58,9 @@ public class CharacterMovement : MonoBehaviour
 
         rigidbody.MovePosition(newPosition);
 
-        HandleJump();
+        HandleJump(isGrounded);
 
-        if (isGrounded && jumpTimeValue <= 0.0f)
+        if (isGrounded)
             rigidbody.useGravity = false;
         else
             rigidbody.useGravity = true;
@@ -84,27 +83,16 @@ public class CharacterMovement : MonoBehaviour
         transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, 1.0f);
     }
 
-    private void SetHandColliderStatus(bool enabled)
+    private void HandleJump(bool isGrounded)
     {
-        handCollider.Collider.enabled = enabled;
-    }
-
-    private void OnEnemyHit(Enemy enemy)
-    {
-        Debug.Log(enemy.name);
-    }
-
-    private void HandleJump()
-    {
-        if (isJumping && jumpTimeValue > 0.0f)
+        if (canJump)
         {
             Jump();
-            jumpTimeValue -= Time.fixedDeltaTime;
         }
-        else if (isJumping && IsGrounded())
+        else if (isJumping && isGrounded && rigidbody.useGravity)
         {
             isJumping = false;
-            onJumping.Invoke();
+            onJumping.Invoke(false);
         }
     }
 
@@ -115,8 +103,20 @@ public class CharacterMovement : MonoBehaviour
 
     private void Jump()
     {
-        rigidbody.velocity = Vector3.zero;
+        isJumping = true;
         rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        onJumping?.Invoke(true);
+        canJump = false;
+    }
+
+    private void SetHandColliderStatus(bool enabled)
+    {
+        handCollider.Collider.enabled = enabled;
+    }
+
+    private void OnEnemyHit(Enemy enemy)
+    {
+        Debug.Log(enemy.name);
     }
 
     private bool IsGrounded()
@@ -173,20 +173,9 @@ public class CharacterMovement : MonoBehaviour
         Attack();
     }
 
-    private void OnJump(InputValue value)
+    private void OnJump()
     {
-        bool canJump = value.isPressed && IsGrounded();
-
-        if (canJump)
-        {
-            isJumping = true;
-            jumpTimeValue = jumpTime;
-            onJumping?.Invoke();
-        }
-        else
-        {
-            jumpTimeValue = 0.0f;
-        }
+        canJump = IsGrounded() ? true : false;
     }
 
     private void OnRotateCamera(InputValue value)

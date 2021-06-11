@@ -365,7 +365,7 @@ PrefabInstance:
     - target: {fileID: 4911597178952349933, guid: 973af55933c268540a83874e526a3b0f,
         type: 3}
       propertyPath: jumpForce
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4911597178952349933, guid: 973af55933c268540a83874e526a3b0f,
         type: 3}

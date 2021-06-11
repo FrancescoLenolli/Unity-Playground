@@ -39,9 +39,8 @@ public class CharacterAnimator : MonoBehaviour
         animator.SetTrigger(attackTriggerHash);
     }
 
-    public void JumpAnimation()
+    public void JumpAnimation(bool hasJumped)
     {
-        bool hasJumped = animator.GetBool(isJumpingHash);
-        animator.SetBool(isJumpingHash, !hasJumped);
+        animator.SetBool(isJumpingHash, hasJumped);
     }
 }
