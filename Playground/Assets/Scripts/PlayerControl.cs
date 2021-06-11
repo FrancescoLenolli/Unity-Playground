@@ -8,6 +8,8 @@ public class PlayerControl : MonoBehaviour
 
     private CharacterMovement characterMovement;
     private CharacterAnimator characterAnimator;
+    private float inputValue;
+    private bool isRunning;
 
     private void Awake()
     {
@@ -16,9 +18,6 @@ public class PlayerControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float inputValue = 0.0f;
-        bool isRunning = false;
-
         characterMovement.HandleMovement(out inputValue, out isRunning);
         characterMovement.HandleRotation();
         characterAnimator.HandleAnimation(inputValue, isRunning);
