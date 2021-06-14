@@ -48,7 +48,7 @@ public class CharacterMovement : MonoBehaviour
         moveInputValue = movementValue;
 
         moveInputValue.z = Mathf.Clamp(moveInputValue.z, -maxBackwardsSpeedValue, 1.0f);
-        Vector3 velocity = (canRun ? speed * runSpeedMultiplier : speed) * Time.deltaTime * moveInputValue;
+        Vector3 velocity = (canRun ? speed * runSpeedMultiplier : speed) * Time.fixedDeltaTime * moveInputValue;
         Vector3 newPosition = transform.position + velocity;
 
         rigidbody.MovePosition(newPosition);
@@ -92,7 +92,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!isInAttackMode)
             return;
-        if (attackCooldown > 0.0f)
+        if (attackCooldownTime > 0.0f)
             return;
 
         StartCoroutine(AttackRoutine());
