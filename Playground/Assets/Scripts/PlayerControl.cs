@@ -2,12 +2,15 @@
 
 [RequireComponent(typeof(CharacterMovement))]
 [RequireComponent(typeof(CharacterAnimator))]
+[RequireComponent(typeof(PlayerInputDetection))]
 public class PlayerControl : MonoBehaviour
 {
     public FollowObject cameraTarget = null;
 
     private CharacterMovement characterMovement;
     private CharacterAnimator characterAnimator;
+    private PlayerInputDetection playerInputDetection;
+    private Vector3 movementValue;
     private float inputValue;
     private bool isRunning;
 
@@ -18,7 +21,8 @@ public class PlayerControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        characterMovement.HandleMovement(out inputValue, out isRunning);
+        playerInputDetection.HandleInput(out movementValue, out isRunning);
+        characterMovement.HandleMovement(movementValue, isRunning, out inputValue, out isRunning);
         characterMovement.HandleRotation();
         characterAnimator.HandleAnimation(inputValue, isRunning);
     }
@@ -27,24 +31,26 @@ public class PlayerControl : MonoBehaviour
     {
         characterMovement = GetComponent<CharacterMovement>();
         characterAnimator = GetComponent<CharacterAnimator>();
-
+        playerInputDetection = GetComponent<PlayerInputDetection>();
         Rigidbody rb = GetComponent<Rigidbody>();
         Animator animator = GetComponentInChildren<Animator>();
 
-        if (!rb)
-            Debug.LogWarning($"{gameObject.name} missing Rigidbody component!");
-        else
-            characterMovement.SetUp(rb, cameraTarget.transform);
+        playerInputDetection.SetUp(cameraTarget.transform);
 
-        if (!animator)
-            Debug.LogWarning($"{gameObject.name} model missing Animator component!");
-        else
+        if (rb)
+            characterMovement.SetUp(rb);
+
+        if (animator)
             characterAnimator.SetUp(animator);
 
-        characterMovement.OnAttackModePressed += characterAnimator.SetFightingStanceAnimation;
+        if (cameraTarget)
+            playerInputDetection.OnRotatingCamera += cameraTarget.SetRotationInput;
+
+        playerInputDetection.OnAttackModePressed += characterMovement.SetAttackMode;
+        playerInputDetection.OnAttackModePressed += characterAnimator.SetFightingStanceAnimation;
+        playerInputDetection.OnAttackPressed += characterMovement.Attack;
+        playerInputDetection.OnJumpPressed += characterMovement.SetJump;
         characterMovement.OnAttackPressed += characterAnimator.AttackAnimation;
         characterMovement.OnJumping += characterAnimator.JumpAnimation;
-        if (cameraTarget)
-            characterMovement.OnRotatingCamera += cameraTarget.SetRotationInput;
     }
 }

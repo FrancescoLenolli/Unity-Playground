@@ -32,7 +32,7 @@ public class FollowObject : MonoBehaviour
 
     private void HandleRotation()
     {
-        Vector3 rotationVector = rotationInputValue * Time.deltaTime * rotationSpeed;
+        Vector3 rotationVector = rotationSpeed * Time.deltaTime * rotationInputValue;
 
         transform.Rotate(rotationVector);
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0.0f);

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Reflection;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -16,10 +14,7 @@ public class CharacterMovement : MonoBehaviour
     public float jumpForce = 1.0f;
 
     private new Rigidbody rigidbody;
-    private Transform cameraTarget;
     private Vector3 moveInputValue;
-    private Vector3 rotationInputValue;
-    private bool isRunningPressed;
     private bool isInAttackMode;
     private bool canJump;
     private bool isJumping;
@@ -35,12 +30,10 @@ public class CharacterMovement : MonoBehaviour
     public Action<bool> OnJumping { get => onJumping; set => onJumping = value; }
     public Action<Vector3> OnRotatingCamera { get => onRotateCamera; set => onRotateCamera = value; }
 
-    public void SetUp(Rigidbody rigidbody, Transform cameraTarget)
+    public void SetUp(Rigidbody rigidbody)
     {
         this.rigidbody = rigidbody;
-        this.cameraTarget = cameraTarget;
         moveInputValue = Vector2.zero;
-        isRunningPressed = false;
         isInAttackMode = false;
         isJumping = false;
         attackCooldownTime = 0.0f;
@@ -48,12 +41,14 @@ public class CharacterMovement : MonoBehaviour
         handCollider.OnEnemyCollision += OnEnemyHit;
     }
 
-    public void HandleMovement(out float inputValue, out bool isRunning)
+    public void HandleMovement(Vector3 movementValue, bool isRunningPressed, out float inputValue, out bool isRunning)
     {
         bool isGrounded = IsGrounded();
         bool canRun = isRunningPressed && isGrounded;
+        moveInputValue = movementValue;
+
         moveInputValue.z = Mathf.Clamp(moveInputValue.z, -maxBackwardsSpeedValue, 1.0f);
-        Vector3 velocity = moveInputValue * Time.deltaTime * (canRun ? speed * runSpeedMultiplier : speed);
+        Vector3 velocity = (canRun ? speed * runSpeedMultiplier : speed) * Time.deltaTime * moveInputValue;
         Vector3 newPosition = transform.position + velocity;
 
         rigidbody.MovePosition(newPosition);
@@ -83,6 +78,26 @@ public class CharacterMovement : MonoBehaviour
         transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, 1.0f);
     }
 
+    public void SetAttackMode(bool isInAttackMode)
+    {
+        this.isInAttackMode = isInAttackMode;
+    }
+
+    public void SetJump()
+    {
+        canJump = IsGrounded();
+    }
+
+    public void Attack()
+    {
+        if (!isInAttackMode)
+            return;
+        if (attackCooldown > 0.0f)
+            return;
+
+        StartCoroutine(AttackRoutine());
+    }
+
     private void HandleJump(bool isGrounded)
     {
         if (canJump)
@@ -94,11 +109,6 @@ public class CharacterMovement : MonoBehaviour
             isJumping = false;
             onJumping.Invoke(false);
         }
-    }
-
-    private void Attack()
-    {
-        StartCoroutine(AttackRoutine());
     }
 
     private void Jump()
@@ -121,72 +131,18 @@ public class CharacterMovement : MonoBehaviour
 
     private bool IsGrounded()
     {
-        RaycastHit hitInfo;
         float offset = 0.1f;
         Vector3 startPoint = new Vector3(transform.position.x, transform.position.y + offset, transform.position.z);
         Vector3 direction = Vector3.down;
 
-        Physics.Raycast(startPoint, direction, out hitInfo, 0.1f + offset);
+        Physics.Raycast(startPoint, direction, out RaycastHit hitInfo, 0.1f + offset);
         return hitInfo.transform != null;
     }
 
-    private bool isFalling()
+    private bool IsFalling()
     {
         return rigidbody.velocity.y < 0.0f;
     }
-
-    //---------- PlayerInput methods ----------//
-
-    private void OnMovement(InputValue value)
-    {
-        Vector2 inputValue = value.Get<Vector2>();
-        Vector3 newMoveInputValue = new Vector3(inputValue.x, 0, inputValue.y);
-
-        if (cameraTarget)
-        {
-            newMoveInputValue = inputValue.y * cameraTarget.transform.forward + inputValue.x * cameraTarget.transform.right;
-            newMoveInputValue = new Vector3(newMoveInputValue.x, 0.0f, newMoveInputValue.z);
-        }
-
-        moveInputValue = newMoveInputValue;
-    }
-
-    private void OnRun(InputValue value)
-    {
-        isRunningPressed = value.isPressed;
-    }
-
-    private void OnAttackMode()
-    {
-        isInAttackMode = !isInAttackMode;
-        onAttackModePressed?.Invoke(isInAttackMode);
-    }
-
-    private void OnAttack()
-    {
-        if (!isInAttackMode)
-            return;
-
-        if (attackCooldownTime > 0.0f)
-            return;
-
-        Attack();
-    }
-
-    private void OnJump()
-    {
-        canJump = IsGrounded() ? true : false;
-    }
-
-    private void OnRotateCamera(InputValue value)
-    {
-        Vector2 input = value.Get<Vector2>();
-        rotationInputValue = new Vector3(input.y, input.x, 0);
-
-        OnRotatingCamera?.Invoke(rotationInputValue);
-    }
-
-    //----------------------------------------//
 
     private IEnumerator AttackRoutine()
     {

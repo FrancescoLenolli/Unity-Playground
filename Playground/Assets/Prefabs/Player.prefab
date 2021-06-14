@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 4911597178952349935}
   - component: {fileID: 4911597178952349933}
   - component: {fileID: 4911597178952349930}
+  - component: {fileID: 574738915}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -185,6 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b449c56bc932ac44f8d8a54c7ebb19bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraTarget: {fileID: 0}
 --- !u!114 &4911597178952349933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,14 +200,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handCollider: {fileID: 4798701988398231529}
-  cameraFollow: {fileID: 0}
-  rotateCameraSpeed: 1
+  rotateCameraSpeed: 40
   speed: 2
   runSpeedMultiplier: 4
   maxBackwardsSpeedValue: 1
   attackCooldown: 0.5
-  jumpForce: 1
-  jumpTime: 1
+  jumpForce: 4
 --- !u!114 &4911597178952349930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +219,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxAnimationValue: 2
+--- !u!114 &574738915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4911597178952349929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 918d8796bdf7d76439247c7ca8ae2ae7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &956853463139868147
 Animator:
   serializedVersion: 3
