@@ -5,13 +5,7 @@ using UnityEngine;
 public class CharacterMovement : MonoBehaviour
 {
     public HandCollider handCollider = null;
-    public float rotateCameraSpeed = 1.0f;
-    public float speed = 1.0f;
-    public float runSpeedMultiplier = 2.0f;
-    [Range(0.1f, 1f)]
-    public float maxBackwardsSpeedValue = -0.3f;
-    public float attackCooldown = 0.5f;
-    public float jumpForce = 1.0f;
+    public MovementValues movementValues = null;
 
     private new Rigidbody rigidbody;
     private Vector3 moveInputValue;
@@ -43,22 +37,18 @@ public class CharacterMovement : MonoBehaviour
 
     public void HandleMovement(Vector3 movementValue, bool isRunningPressed, out float inputValue, out bool isRunning)
     {
-        bool isGrounded = IsGrounded();
+        bool isGrounded = CharacterUtilities.IsGrounded(transform);
         bool canRun = isRunningPressed && isGrounded;
         moveInputValue = movementValue;
 
-        moveInputValue.z = Mathf.Clamp(moveInputValue.z, -maxBackwardsSpeedValue, 1.0f);
-        Vector3 velocity = (canRun ? speed * runSpeedMultiplier : speed) * Time.fixedDeltaTime * moveInputValue;
+        Vector3 velocity = (canRun ? movementValues.speed * movementValues.runSpeedMultiplier : movementValues.speed) * Time.fixedDeltaTime * moveInputValue;
         Vector3 newPosition = transform.position + velocity;
 
         rigidbody.MovePosition(newPosition);
 
         HandleJump(isGrounded);
 
-        if (isGrounded)
-            rigidbody.useGravity = false;
-        else
-            rigidbody.useGravity = true;
+        rigidbody.useGravity = !isGrounded;
 
         float inputX = Mathf.Abs(moveInputValue.x);
         float inputZ = Mathf.Abs(moveInputValue.z);
@@ -85,7 +75,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void SetJump()
     {
-        canJump = IsGrounded();
+        canJump = CharacterUtilities.IsGrounded(transform);
     }
 
     public void Attack()
@@ -114,7 +104,7 @@ public class CharacterMovement : MonoBehaviour
     private void Jump()
     {
         isJumping = true;
-        rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        rigidbody.AddForce(Vector3.up * movementValues.jumpForce, ForceMode.Impulse);
         onJumping?.Invoke(true);
         canJump = false;
     }
@@ -129,30 +119,15 @@ public class CharacterMovement : MonoBehaviour
         Debug.Log(enemy.name);
     }
 
-    private bool IsGrounded()
-    {
-        float offset = 0.1f;
-        Vector3 startPoint = new Vector3(transform.position.x, transform.position.y + offset, transform.position.z);
-        Vector3 direction = Vector3.down;
-
-        Physics.Raycast(startPoint, direction, out RaycastHit hitInfo, 0.1f + offset);
-        return hitInfo.transform != null;
-    }
-
-    private bool IsFalling()
-    {
-        return rigidbody.velocity.y < 0.0f;
-    }
-
     private IEnumerator AttackRoutine()
     {
         onAttackPressed?.Invoke();
-        attackCooldownTime = attackCooldown;
+        attackCooldownTime = movementValues.attackCooldown;
         SetHandColliderStatus(true);
 
         while (attackCooldownTime > 0.0f)
         {
-            attackCooldownTime = Mathf.Clamp(attackCooldownTime - Time.deltaTime, 0.0f, attackCooldown);
+            attackCooldownTime = Mathf.Clamp(attackCooldownTime - Time.deltaTime, 0.0f, movementValues.attackCooldown);
             yield return null;
         }
 

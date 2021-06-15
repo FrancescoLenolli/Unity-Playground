@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -37,7 +35,7 @@ public class PlayerInputDetection : MonoBehaviour
         if (this.movementValue == Vector3.zero)
             this.isRunningPressed = false;
 
-        movementValue = this.movementValue;;
+        movementValue = this.movementValue; ;
         isRunningPressed = this.isRunningPressed;
     }
 
@@ -77,7 +75,7 @@ public class PlayerInputDetection : MonoBehaviour
         onJumpPressed?.Invoke();
     }
 
-    private void UpdateMovement() 
+    private void UpdateMovement()
     {
         Vector3 newMoveInputValue = new Vector3(rawMoveInputValue.x, 0, rawMoveInputValue.y);
 
