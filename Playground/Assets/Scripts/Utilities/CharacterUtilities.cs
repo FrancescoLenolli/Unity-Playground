@@ -13,7 +13,12 @@ public static class CharacterUtilities
         Vector3 startPoint = new Vector3(transform.position.x, transform.position.y + offset, transform.position.z);
         Physics.Raycast(startPoint, Vector3.down, out RaycastHit hitInfo, 0.1f + offset);
 
-        return hitInfo.transform != null;
+        if (hitInfo.transform)
+        {
+            return hitInfo.transform != transform;
+        }
+
+        return false;
     }
 
     /// <summary>

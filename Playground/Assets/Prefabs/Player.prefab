@@ -86,11 +86,12 @@ GameObject:
   - component: {fileID: 4911597178952349934}
   - component: {fileID: 4911597178952349931}
   - component: {fileID: 4015126733588168463}
+  - component: {fileID: 1877482603}
   - component: {fileID: 4530921611543456858}
   - component: {fileID: 4911597178952349935}
+  - component: {fileID: 574738915}
   - component: {fileID: 4911597178952349933}
   - component: {fileID: 4911597178952349930}
-  - component: {fileID: 574738915}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -158,6 +159,20 @@ CapsuleCollider:
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
+--- !u!136 &1877482603
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4911597178952349929}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.35
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!54 &4530921611543456858
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -187,6 +202,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraTarget: {fileID: 0}
+--- !u!114 &574738915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4911597178952349929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 918d8796bdf7d76439247c7ca8ae2ae7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4911597178952349933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,12 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handCollider: {fileID: 4798701988398231529}
-  rotateCameraSpeed: 40
-  speed: 2
-  runSpeedMultiplier: 4
-  maxBackwardsSpeedValue: 1
-  attackCooldown: 0.5
-  jumpForce: 4
+  movementValues: {fileID: 11400000, guid: 81ce3e38626286744b243e1d2cd618a6, type: 2}
 --- !u!114 &4911597178952349930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,18 +241,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxAnimationValue: 2
---- !u!114 &574738915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4911597178952349929}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 918d8796bdf7d76439247c7ca8ae2ae7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &956853463139868147
 Animator:
   serializedVersion: 3
