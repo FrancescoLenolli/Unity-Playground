@@ -81,8 +81,8 @@ public class PlayerInputDetection : MonoBehaviour
 
         if (cameraTarget)
         {
-            newMoveInputValue = rawMoveInputValue.y * cameraTarget.transform.forward + rawMoveInputValue.x * cameraTarget.transform.right;
-            newMoveInputValue = new Vector3(newMoveInputValue.x, 0.0f, newMoveInputValue.z);
+            newMoveInputValue = Quaternion.Euler(0, cameraTarget.eulerAngles.y, 0) * newMoveInputValue;
+            newMoveInputValue.y = 0.0f;
         }
 
         movementValue = newMoveInputValue;
