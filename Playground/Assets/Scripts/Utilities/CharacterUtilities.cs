@@ -36,4 +36,11 @@ public static class CharacterUtilities
 
         return rigidbody.velocity.y < 0.0f;
     }
+
+    public static float SqrDistance(Transform character, Transform target)
+    {
+        Vector3 offset = target.position - character.position;
+
+        return offset.sqrMagnitude;
+    }
 }

@@ -5,8 +5,12 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public float maxHealth = 10.0f;
+    public float detectionDistance = 5.0f;
 
     private float health;
+    private PlayerControl targetPlayer;
+
+    public PlayerControl TargetPlayer { get => targetPlayer; set => targetPlayer = value; }
 
     private void Start()
     {
