@@ -10,6 +10,7 @@ public class PlayerControl : MonoBehaviour
     private CharacterMovement characterMovement;
     private CharacterAnimator characterAnimator;
     private PlayerInputDetection playerInputDetection;
+    private Transform targetedObject;
     private Vector3 movementValue;
     private float inputValue;
     private bool isRunning;
@@ -29,6 +30,7 @@ public class PlayerControl : MonoBehaviour
 
     private void SetUp()
     {
+        RaycastTargeting raycastTargeting = cameraTarget.GetComponent<RaycastTargeting>();
         characterMovement = GetComponent<CharacterMovement>();
         characterAnimator = GetComponent<CharacterAnimator>();
         playerInputDetection = GetComponent<PlayerInputDetection>();
@@ -52,5 +54,12 @@ public class PlayerControl : MonoBehaviour
         playerInputDetection.OnJumpPressed += characterMovement.SetJump;
         characterMovement.OnAttackPressed += characterAnimator.AttackAnimation;
         characterMovement.OnJumping += characterAnimator.JumpAnimation;
+        raycastTargeting.OnTargeting += SetTargetedObject;
+    }
+
+    private void SetTargetedObject(Transform newObject)
+    {
+        targetedObject = newObject;
+        Debug.Log(targetedObject ? targetedObject.name : "no object targeted");
     }
 }
