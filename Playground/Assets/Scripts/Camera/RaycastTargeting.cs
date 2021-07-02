@@ -9,9 +9,9 @@ public class RaycastTargeting : MonoBehaviour
     private float offset = 0.1f;
     private Vector3 startPoint;
     private Vector3 direction;
-    private Action<Transform> onTargeting;
+    private Action<IInteractable> onTargeting;
 
-    public Action<Transform> OnTargeting { get => onTargeting; set => onTargeting = value; }
+    public Action<IInteractable> OnTargeting { get => onTargeting; set => onTargeting = value; }
 
     private void Update()
     {
@@ -27,6 +27,13 @@ public class RaycastTargeting : MonoBehaviour
 
         Physics.Raycast(startPoint, direction, out RaycastHit hitInfo, range + offset, 1);
 
-        onTargeting?.Invoke(hitInfo.transform);
+        if (!hitInfo.transform)
+        {
+            onTargeting.Invoke(null);
+            return;
+        }
+
+        IInteractable interactiveObject = hitInfo.transform.GetComponent<IInteractable>();
+        onTargeting?.Invoke(interactiveObject);
     }
 }

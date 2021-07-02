@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(CharacterMovement))]
 [RequireComponent(typeof(CharacterAnimator))]
@@ -10,7 +11,7 @@ public class PlayerControl : MonoBehaviour
     private CharacterMovement characterMovement;
     private CharacterAnimator characterAnimator;
     private PlayerInputDetection playerInputDetection;
-    private Transform targetedObject;
+    private IInteractable targetedObject;
     private Vector3 movementValue;
     private float inputValue;
     private bool isRunning;
@@ -52,14 +53,32 @@ public class PlayerControl : MonoBehaviour
         playerInputDetection.OnAttackModePressed += characterAnimator.SetFightingStanceAnimation;
         playerInputDetection.OnAttackPressed += characterMovement.Attack;
         playerInputDetection.OnJumpPressed += characterMovement.SetJump;
+        playerInputDetection.OnInteractPressed += Interact;
         characterMovement.OnAttackPressed += characterAnimator.AttackAnimation;
         characterMovement.OnJumping += characterAnimator.JumpAnimation;
         raycastTargeting.OnTargeting += SetTargetedObject;
     }
 
-    private void SetTargetedObject(Transform newObject)
+    private void SetTargetedObject(IInteractable newObject)
     {
+        if (targetedObject == newObject)
+            return;
+
+        IInteractable previousObject = targetedObject;
         targetedObject = newObject;
-        Debug.Log(targetedObject ? targetedObject.name : "no object targeted");
+
+        if (previousObject != null)
+            previousObject.OffFocus();
+        if (targetedObject != null)
+            targetedObject.OnFocus();
+    }
+
+    private void Interact()
+    {
+        //Action onInteract = targetedObject != null ? targetedObject.Interact : new Action(() => { });
+        //onInteract?.Invoke();
+
+        if (targetedObject != null)
+            targetedObject.Interact();
     }
 }

@@ -14,12 +14,14 @@ public class PlayerInputDetection : MonoBehaviour
     private Action<bool> onAttackModePressed;
     private Action onAttackPressed;
     private Action onJumpPressed;
+    private Action onInteract;
     private Action<Vector3> onRotatingCamera;
 
     public Action<bool> OnAttackModePressed { get => onAttackModePressed; set => onAttackModePressed = value; }
     public Action OnAttackPressed { get => onAttackPressed; set => onAttackPressed = value; }
     public Action OnJumpPressed { get => onJumpPressed; set => onJumpPressed = value; }
     public Action<Vector3> OnRotatingCamera { get => onRotatingCamera; set => onRotatingCamera = value; }
+    public Action OnInteractPressed { get => onInteract; set => onInteract = value; }
 
     public void SetUp(Transform cameraTarget)
     {
@@ -73,6 +75,11 @@ public class PlayerInputDetection : MonoBehaviour
     private void OnJump()
     {
         onJumpPressed?.Invoke();
+    }
+
+    private void OnInteract()
+    {
+        onInteract?.Invoke();
     }
 
     private void UpdateMovement()

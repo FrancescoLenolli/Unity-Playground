@@ -65,6 +65,14 @@ public class @Player_Input : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""cc504db6-f852-4a2e-83cc-279baa510728"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -232,6 +240,28 @@ public class @Player_Input : IInputActionCollection, IDisposable
                     ""action"": ""RotateCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e8416925-40d9-4bf0-9061-1628f69662cc"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ee5367d3-4264-4bf4-b1be-b10be61cdf05"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -246,6 +276,7 @@ public class @Player_Input : IInputActionCollection, IDisposable
         m_CharacterControl_Attack = m_CharacterControl.FindAction("Attack", throwIfNotFound: true);
         m_CharacterControl_Jump = m_CharacterControl.FindAction("Jump", throwIfNotFound: true);
         m_CharacterControl_RotateCamera = m_CharacterControl.FindAction("RotateCamera", throwIfNotFound: true);
+        m_CharacterControl_Interact = m_CharacterControl.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -301,6 +332,7 @@ public class @Player_Input : IInputActionCollection, IDisposable
     private readonly InputAction m_CharacterControl_Attack;
     private readonly InputAction m_CharacterControl_Jump;
     private readonly InputAction m_CharacterControl_RotateCamera;
+    private readonly InputAction m_CharacterControl_Interact;
     public struct CharacterControlActions
     {
         private @Player_Input m_Wrapper;
@@ -311,6 +343,7 @@ public class @Player_Input : IInputActionCollection, IDisposable
         public InputAction @Attack => m_Wrapper.m_CharacterControl_Attack;
         public InputAction @Jump => m_Wrapper.m_CharacterControl_Jump;
         public InputAction @RotateCamera => m_Wrapper.m_CharacterControl_RotateCamera;
+        public InputAction @Interact => m_Wrapper.m_CharacterControl_Interact;
         public InputActionMap Get() { return m_Wrapper.m_CharacterControl; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -338,6 +371,9 @@ public class @Player_Input : IInputActionCollection, IDisposable
                 @RotateCamera.started -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnRotateCamera;
                 @RotateCamera.performed -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnRotateCamera;
                 @RotateCamera.canceled -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnRotateCamera;
+                @Interact.started -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_CharacterControlActionsCallbackInterface.OnInteract;
             }
             m_Wrapper.m_CharacterControlActionsCallbackInterface = instance;
             if (instance != null)
@@ -360,6 +396,9 @@ public class @Player_Input : IInputActionCollection, IDisposable
                 @RotateCamera.started += instance.OnRotateCamera;
                 @RotateCamera.performed += instance.OnRotateCamera;
                 @RotateCamera.canceled += instance.OnRotateCamera;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
         }
     }
@@ -372,5 +411,6 @@ public class @Player_Input : IInputActionCollection, IDisposable
         void OnAttack(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnRotateCamera(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
 }
