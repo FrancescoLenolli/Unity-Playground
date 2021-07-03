@@ -68,9 +68,9 @@ public class PlayerControl : MonoBehaviour
         targetedObject = newObject;
 
         if (previousObject != null)
-            previousObject.OffFocus();
+            previousObject.FocusOff();
         if (targetedObject != null)
-            targetedObject.OnFocus();
+            targetedObject.FocusOn();
     }
 
     private void Interact()

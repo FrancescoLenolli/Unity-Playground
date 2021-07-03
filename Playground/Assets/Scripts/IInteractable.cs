@@ -5,6 +5,6 @@ using UnityEngine;
 public interface IInteractable
 {
     void Interact();
-    void OnFocus();
-    void OffFocus();
+    void FocusOn();
+    void FocusOff();
 }

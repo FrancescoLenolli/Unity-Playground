@@ -12,12 +12,12 @@ public class Box : MonoBehaviour, IInteractable
         Debug.Log($"Interacting with {transform.name}");
     }
 
-    public void OffFocus()
+    public void FocusOff()
     {
         GetComponent<MeshRenderer>().material = baseMaterial;
     }
 
-    public void OnFocus()
+    public void FocusOn()
     {
         GetComponent<MeshRenderer>().material = highlightedMaterial;
     }
