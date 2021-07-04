@@ -29,7 +29,7 @@ public class RaycastTargeting : MonoBehaviour
 
         if (!hitInfo.transform)
         {
-            onTargeting.Invoke(null);
+            onTargeting?.Invoke(null);
             return;
         }
 
