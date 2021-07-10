@@ -34,8 +34,7 @@ public class StateMachine : MonoBehaviour
 
         foreach (State state in states)
         {
-            state.Owner = owner;
-            state.StateMachine = this;
+            state.SetUp(owner, this);
         }
 
         currentState = startingState;

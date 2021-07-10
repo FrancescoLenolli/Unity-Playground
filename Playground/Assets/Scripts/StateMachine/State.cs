@@ -7,8 +7,14 @@ public abstract class State : MonoBehaviour
     private Enemy owner;
     private StateMachine stateMachine;
 
-    public Enemy Owner { get => owner; set => owner = value; }
-    public StateMachine StateMachine { get => stateMachine; set => stateMachine = value; }
+    public Enemy Owner { get => owner; }
+    public StateMachine StateMachine { get => stateMachine; }
+
+    public void SetUp(Enemy owner, StateMachine stateMachine)
+    {
+        this.owner = owner;
+        this.stateMachine = stateMachine;
+    }
 
     public abstract void UpdateState();
 }
