@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class State_SearchForPlayer : State
 {
+    private PlayerControl target;
+
     public override void UpdateState()
     {
-        if (!Owner.TargetPlayer)
-            Owner.TargetPlayer = FindObjectOfType<PlayerControl>();
-
-        if (!Owner.TargetPlayer)
-            return;
-
-        float distance = CharacterUtilities.SqrDistance(Owner.transform, Owner.TargetPlayer.transform);
-        float sqrDetectionDistance = Owner.detectionDistance * Owner.detectionDistance;
-        if (distance <= sqrDetectionDistance)
+        if (!target)
         {
-            StateMachine.SwitchState(typeof(State_LookAtPlayer));
+            target = FindObjectOfType<PlayerControl>();
+            StateMachine.SwitchState(typeof(State_Move));
+            return;
         }
+
+        float sqrDistance = CharacterUtilities.SqrDistance(Owner.transform, target.transform);
+        float sqrDetectionDistance = Owner.detectionDistance * Owner.detectionDistance;
+        Owner.TargetPlayer = sqrDistance <= sqrDetectionDistance ? target : null;
+
+        StateMachine.SwitchState(typeof(State_Move));
     }
 }
