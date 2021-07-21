@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(CharacterMovement))]
 [RequireComponent(typeof(CharacterAnimator))]
@@ -64,17 +63,13 @@ public class PlayerControl : MonoBehaviour
         if (targetedObject == newObject)
             return;
 
-        IInteractable previousObject = targetedObject;
         targetedObject = newObject;
-
-        if (previousObject != null)
-            previousObject.FocusOff();
-        if (targetedObject != null)
-            targetedObject.FocusOn();
+        Debug.Log(targetedObject);
     }
 
     private void Interact()
     {
+        // I was bored and went a bit overboard.
         //Action onInteract = targetedObject != null ? targetedObject.Interact : new Action(() => { });
         //onInteract?.Invoke();
 
