@@ -5,6 +5,4 @@ using UnityEngine;
 public interface IInteractable
 {
     void Interact();
-    void FocusOn();
-    void FocusOff();
 }

@@ -5,12 +5,13 @@
 [RequireComponent(typeof(PlayerInputDetection))]
 public class PlayerControl : MonoBehaviour
 {
-    public FollowObject cameraTarget = null;
+    [SerializeField]
+    private FollowObject cameraTarget = null;
 
     private CharacterMovement characterMovement;
     private CharacterAnimator characterAnimator;
     private PlayerInputDetection playerInputDetection;
-    private IInteractable targetedObject;
+    private PlayerInteraction playerInteraction;
     private Vector3 movementValue;
     private float inputValue;
     private bool isRunning;
@@ -31,11 +32,12 @@ public class PlayerControl : MonoBehaviour
     private void SetUp()
     {
         RaycastTargeting raycastTargeting = cameraTarget.GetComponent<RaycastTargeting>();
+        Rigidbody rb = GetComponent<Rigidbody>();
+        Animator animator = GetComponentInChildren<Animator>();
         characterMovement = GetComponent<CharacterMovement>();
         characterAnimator = GetComponent<CharacterAnimator>();
         playerInputDetection = GetComponent<PlayerInputDetection>();
-        Rigidbody rb = GetComponent<Rigidbody>();
-        Animator animator = GetComponentInChildren<Animator>();
+        playerInteraction = GetComponent<PlayerInteraction>();
 
         playerInputDetection.SetUp(cameraTarget.transform);
 
@@ -48,32 +50,22 @@ public class PlayerControl : MonoBehaviour
         if (cameraTarget)
             playerInputDetection.OnRotatingCamera += cameraTarget.SetRotationInput;
 
+        if (playerInteraction)
+        {
+            if (raycastTargeting)
+            {
+                raycastTargeting.enableTargeting = true;
+                raycastTargeting.OnTargeting += playerInteraction.SetTargetedObject;
+            }
+
+            playerInputDetection.OnInteractPressed += playerInteraction.Interact;
+        }
+
         playerInputDetection.OnAttackModePressed += characterMovement.SetAttackMode;
         playerInputDetection.OnAttackModePressed += characterAnimator.SetFightingStanceAnimation;
         playerInputDetection.OnAttackPressed += characterMovement.Attack;
         playerInputDetection.OnJumpPressed += characterMovement.SetJump;
-        playerInputDetection.OnInteractPressed += Interact;
         characterMovement.OnAttackPressed += characterAnimator.AttackAnimation;
         characterMovement.OnJumping += characterAnimator.JumpAnimation;
-        raycastTargeting.OnTargeting += SetTargetedObject;
-    }
-
-    private void SetTargetedObject(IInteractable newObject)
-    {
-        if (targetedObject == newObject)
-            return;
-
-        targetedObject = newObject;
-        Debug.Log(targetedObject);
-    }
-
-    private void Interact()
-    {
-        // I was bored and went a bit overboard.
-        //Action onInteract = targetedObject != null ? targetedObject.Interact : new Action(() => { });
-        //onInteract?.Invoke();
-
-        if (targetedObject != null)
-            targetedObject.Interact();
     }
 }

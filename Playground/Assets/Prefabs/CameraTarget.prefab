@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7994555656960161923}
   - component: {fileID: 7994555656960161924}
+  - component: {fileID: 7994555657048945946}
+  - component: {fileID: 7994555657048945947}
   m_Layer: 0
   m_Name: CameraTarget
   m_TagString: Untagged
@@ -45,3 +47,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   rotationSpeed: 80
+  rotationLimit: {x: -30, y: 60}
+--- !u!114 &7994555657048945946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7994555656960161922}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75ef2299a787210409b3a05bb1044575, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7994555657048945947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7994555656960161922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcef37129c8f4054cbcebe31b6916c17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 4
+  highlightMaterial: {fileID: 2100000, guid: de2397be711f7bc4398d0004f41892e9, type: 2}
+  debug: 0

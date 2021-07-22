@@ -5,6 +5,7 @@ public class RaycastTargeting : MonoBehaviour
 {
     public float range = 5.0f;
     public Material highlightMaterial;
+    public bool enableTargeting = false;
     public bool debug = false;
 
     private float offset = 0.1f;
@@ -22,19 +23,19 @@ public class RaycastTargeting : MonoBehaviour
 
     private void Update()
     {
+        if (!enableTargeting)
+            return;
+
         startPoint = new Vector3(transform.position.x, transform.position.y + offset, transform.position.z);
         direction = transform.forward;
-        RaycastForward(startPoint, direction);
+        FindTarget(startPoint, direction);
     }
 
-    private void RaycastForward(Vector3 startPoint, Vector3 direction)
+    private void FindTarget(Vector3 startPoint, Vector3 direction)
     {
-        if (debug)
-            Debug.DrawRay(startPoint, direction * (range + offset), Color.red);
+        Transform target = RaycastTarget(startPoint, direction, range + offset, debug);
 
-        Physics.Raycast(startPoint, direction, out RaycastHit hitInfo, range + offset, 1);
-
-        if (!hitInfo.transform)
+        if (!target)
         {
             targetingBehaviour.ResetLastTarget();
             targetingBehaviour.FocusOff();
@@ -43,16 +44,26 @@ public class RaycastTargeting : MonoBehaviour
             return;
         }
 
-        if (!targetingBehaviour.IsNewTarget(hitInfo.transform))
+        if (!targetingBehaviour.IsNewTarget(target))
             return;
 
         targetingBehaviour.FocusOff();
-        targetingBehaviour.SetTarget(hitInfo.transform);
+        targetingBehaviour.SetTarget(target);
         IInteractable interactiveObject = targetingBehaviour.CurrentTarget.GetComponent<IInteractable>();
         targetingBehaviour.FocusOn(interactiveObject);
 
         onTargeting?.Invoke(interactiveObject);
 
 
+    }
+
+    private Transform RaycastTarget(Vector3 startPoint, Vector3 direction, float maxDistance, bool debug)
+    {
+        if (debug)
+            Debug.DrawRay(startPoint, direction * maxDistance, Color.red);
+
+        Physics.Raycast(startPoint, direction, out RaycastHit hitInfo, maxDistance, 1);
+
+        return hitInfo.transform;
     }
 }
