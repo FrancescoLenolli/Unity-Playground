@@ -17,7 +17,7 @@ public class FollowObject : MonoBehaviour
         offset = transform.position - target.position;
     }
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         HandlePosition();
         HandleRotation();

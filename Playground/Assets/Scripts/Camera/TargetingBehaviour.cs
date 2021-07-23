@@ -1,56 +1,64 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class TargetingBehaviour
+public class TargetingBehaviour : MonoBehaviour
 {
+    [SerializeField]
     private Material highlightMaterial;
-    private Transform lastTarget;
-    private Transform currentTarget;
+
+    private Transform target;
     private MeshRenderer targetRenderer;
     private Material defaultMaterial;
 
-    public Transform CurrentTarget { get => currentTarget; }
-
-    public TargetingBehaviour(Material highlightMaterial)
+    public void FocusOn()
     {
-        this.highlightMaterial = highlightMaterial;
-    }
-
-    public void FocusOn(IInteractable interactiveObject)
-    {
-        if (interactiveObject != null)
-        {
-            targetRenderer = currentTarget.GetComponent<MeshRenderer>();
-            defaultMaterial = targetRenderer.material;
-            targetRenderer.material = highlightMaterial;
-        }
+        Debug.Log("Focus on");
+        targetRenderer = target.GetComponent<MeshRenderer>();
+        defaultMaterial = targetRenderer.material;
+        targetRenderer.material = highlightMaterial;
     }
 
     public void FocusOff()
     {
+        if (!target || target.GetComponent<IInteractable>() == null)
+            return;
+
+        Debug.Log($"Focus off");
         if (targetRenderer)
         {
             targetRenderer.material = defaultMaterial;
             targetRenderer = null;
         }
+    }
 
-        currentTarget = null;
+    public IInteractable GetValidTarget(Transform newTarget)
+    {
+        IInteractable interactiveTarget = null;
+
+        if (newTarget)
+            interactiveTarget = newTarget.GetComponent<IInteractable>();
+
+        FocusOff();
+        SetTarget(newTarget);
+
+        if (target && interactiveTarget != null)
+            FocusOn();
+
+        return interactiveTarget;
+    }
+
+    public Transform GetTarget()
+    {
+        return target;
     }
 
     public void SetTarget(Transform target)
     {
-        lastTarget = currentTarget;
-        currentTarget = target;
-    }
-
-    public void ResetLastTarget()
-    {
-        lastTarget = null;
+        Debug.Log("Set Target");
+        this.target = target;
     }
 
     public bool IsNewTarget(Transform target)
     {
-        return lastTarget != target;
+        return this.target != target;
     }
 }

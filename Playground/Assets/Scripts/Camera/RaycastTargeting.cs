@@ -3,23 +3,17 @@ using UnityEngine;
 
 public class RaycastTargeting : MonoBehaviour
 {
+    public TargetingBehaviour targetingBehaviour;
     public float range = 5.0f;
-    public Material highlightMaterial;
     public bool enableTargeting = false;
     public bool debug = false;
 
     private float offset = 0.1f;
     private Vector3 startPoint;
     private Vector3 direction;
-    private TargetingBehaviour targetingBehaviour;
     private Action<IInteractable> onTargeting;
 
     public Action<IInteractable> OnTargeting { get => onTargeting; set => onTargeting = value; }
-
-    private void Awake()
-    {
-        targetingBehaviour = new TargetingBehaviour(highlightMaterial);
-    }
 
     private void Update()
     {
@@ -35,26 +29,10 @@ public class RaycastTargeting : MonoBehaviour
     {
         Transform target = RaycastTarget(startPoint, direction, range + offset, debug);
 
-        if (!target)
+        if (targetingBehaviour.IsNewTarget(target))
         {
-            targetingBehaviour.ResetLastTarget();
-            targetingBehaviour.FocusOff();
-
-            onTargeting?.Invoke(null);
-            return;
+            onTargeting?.Invoke(targetingBehaviour.GetValidTarget(target));
         }
-
-        if (!targetingBehaviour.IsNewTarget(target))
-            return;
-
-        targetingBehaviour.FocusOff();
-        targetingBehaviour.SetTarget(target);
-        IInteractable interactiveObject = targetingBehaviour.CurrentTarget.GetComponent<IInteractable>();
-        targetingBehaviour.FocusOn(interactiveObject);
-
-        onTargeting?.Invoke(interactiveObject);
-
-
     }
 
     private Transform RaycastTarget(Vector3 startPoint, Vector3 direction, float maxDistance, bool debug)
