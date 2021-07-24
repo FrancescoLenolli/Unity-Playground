@@ -11,14 +11,11 @@ public class TM_Raycast : TargetingMethod
     private Vector3 startPoint;
     private Vector3 direction;
 
-    private void Update()
+    public override Transform GetTarget()
     {
         startPoint = new Vector3(transform.position.x, transform.position.y + offset, transform.position.z);
         direction = transform.forward;
-    }
 
-    public override Transform GetTarget()
-    {
         return RaycastTarget(startPoint, direction, range + offset, debug);
     }
 
