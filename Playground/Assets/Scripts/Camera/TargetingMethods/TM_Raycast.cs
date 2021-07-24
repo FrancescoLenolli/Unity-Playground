@@ -1,38 +1,25 @@
-﻿using System;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class RaycastTargeting : MonoBehaviour
+public class TM_Raycast : TargetingMethod
 {
-    public TargetingBehaviour targetingBehaviour;
     public float range = 5.0f;
-    public bool enableTargeting = false;
     public bool debug = false;
 
     private float offset = 0.1f;
     private Vector3 startPoint;
     private Vector3 direction;
-    private Action<IInteractable> onTargeting;
-
-    public Action<IInteractable> OnTargeting { get => onTargeting; set => onTargeting = value; }
 
     private void Update()
     {
-        if (!enableTargeting)
-            return;
-
         startPoint = new Vector3(transform.position.x, transform.position.y + offset, transform.position.z);
         direction = transform.forward;
-        FindTarget(startPoint, direction);
     }
 
-    private void FindTarget(Vector3 startPoint, Vector3 direction)
+    public override Transform GetTarget()
     {
-        Transform target = RaycastTarget(startPoint, direction, range + offset, debug);
-
-        if (targetingBehaviour.IsNewTarget(target))
-        {
-            onTargeting?.Invoke(targetingBehaviour.GetValidTarget(target));
-        }
+        return RaycastTarget(startPoint, direction, range + offset, debug);
     }
 
     private Transform RaycastTarget(Vector3 startPoint, Vector3 direction, float maxDistance, bool debug)
@@ -45,3 +32,4 @@ public class RaycastTargeting : MonoBehaviour
         return hitInfo.transform;
     }
 }
+

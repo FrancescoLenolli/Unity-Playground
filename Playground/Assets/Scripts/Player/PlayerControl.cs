@@ -31,7 +31,7 @@ public class PlayerControl : MonoBehaviour
 
     private void SetUp()
     {
-        RaycastTargeting raycastTargeting = cameraTarget.GetComponent<RaycastTargeting>();
+        TargetingSystem raycastTargeting = cameraTarget.GetComponent<TargetingSystem>();
         Rigidbody rb = GetComponent<Rigidbody>();
         Animator animator = GetComponentInChildren<Animator>();
         characterMovement = GetComponent<CharacterMovement>();

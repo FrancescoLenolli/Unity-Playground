@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 7994555656960161923}
   - component: {fileID: 7994555656960161924}
   - component: {fileID: 7994555657048945946}
-  - component: {fileID: 7994555657048945947}
-  - component: {fileID: 2070589649}
+  - component: {fileID: 4022346370983731408}
+  - component: {fileID: 1019593013618832129}
+  - component: {fileID: 5754671187292577331}
   m_Layer: 0
   m_Name: CameraTarget
   m_TagString: Untagged
@@ -61,7 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75ef2299a787210409b3a05bb1044575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7994555657048945947
+--- !u!114 &4022346370983731408
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -70,14 +71,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7994555656960161922}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcef37129c8f4054cbcebe31b6916c17, type: 3}
+  m_Script: {fileID: 11500000, guid: 779caea1db2179e479e8d9fcdefd9f54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetingBehaviour: {fileID: 2070589649}
-  range: 4
   enableTargeting: 0
-  debug: 0
---- !u!114 &2070589649
+--- !u!114 &1019593013618832129
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,7 +84,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 7994555656960161922}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78d01433d8aa5884698aee69de317fc5, type: 3}
+  m_Script: {fileID: 11500000, guid: 59cba2061639d80479d38db8fbec3683, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   highlightMaterial: {fileID: 2100000, guid: de2397be711f7bc4398d0004f41892e9, type: 2}
+--- !u!114 &5754671187292577331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7994555656960161922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd8c630fb4716542aefaef65d13b72e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 5
+  debug: 0
